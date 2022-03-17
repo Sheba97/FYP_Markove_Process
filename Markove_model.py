@@ -69,6 +69,7 @@ class Matrix:
                         [0, sRate, -rRate[0]] + [i * 0 for i in range(3)],
                         [fRate[1], 0, 0 ,-sRate, 0, 0], [i * 0 for i in range(3)] + [sRate, -rRate[1], 0],
                         [fRate[2]] + [i * 0 for i in range(4)] + [-rRate[2]]]
+            
             matA = [[1], [0], [0], [0], [0], [0]]
 
             # obtain invers of transition matrix
@@ -92,4 +93,4 @@ if __name__ == '__main__':
     mat = Matrix(failureRate,repairRate,num_sections)
 
     print(mat.matrixCalling())
-    print(failureRate)
+    #print(failureRate)
