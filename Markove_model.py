@@ -61,8 +61,9 @@ class Matrix:
         fRate = list(self.failureRates.values())
         rRate = list(self.repairRates.values())
 
+        sRate = 8760    #default switching rate (deafult switching time is 1hr)
+    
         if num_sections == 2:
-            sRate = 400  # set temporary switching rate as 400
 
             # create transitioon matrix for two sections feeder
             transMat = [[i / i for i in range(1, matSize + 1)], [fRate[0], -sRate] + [i * 0 for i in range(4)],
@@ -76,8 +77,8 @@ class Matrix:
             Inv_transmat = np.linalg.inv(transMat)
 
             # obtaing probability matrix
-            solution = np.dot(Inv_transmat,matA)
-        return solution
+            result = np.dot(Inv_transmat,matA)
+        return result
 
 #open and read the data from csv file
 if __name__ == '__main__':
@@ -90,7 +91,10 @@ if __name__ == '__main__':
     getDelayTime(temp[1:])
     getRepairRate(sectionsDic, delayTime)
     num_sections = len(sectionsDic) - 1
+
     mat = Matrix(failureRate,repairRate,num_sections)
 
-    print(mat.matrixCalling())
+    #print(mat.matrixCalling())
+    for i in mat.matrixCalling():
+        print(i[0])
     #print(failureRate)
