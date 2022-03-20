@@ -80,6 +80,10 @@ class Matrix:
             result = np.dot(Inv_transmat,matA)
         return result
 
+def getProbability(result):
+    for i in result:
+        print(i[0])
+        
 #open and read the data from csv file
 if __name__ == '__main__':
     filename = input("Enter the filename with location: - ")
@@ -95,6 +99,6 @@ if __name__ == '__main__':
     mat = Matrix(failureRate,repairRate,num_sections)
 
     #print(mat.matrixCalling())
-    for i in mat.matrixCalling():
-        print(i[0])
+    getProbability(mat.matrixCalling())
+        
     #print(failureRate)
