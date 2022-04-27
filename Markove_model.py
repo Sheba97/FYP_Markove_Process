@@ -1,25 +1,64 @@
-#import libries
+#import libraries
 import csv
-import numpy as np
+from combinations import *
+from Matrix import *
+#from Main import *
+
+#initial declaretion of dictionaries
+sectionsDict = {}
+failureRate = {}
+repairRate = {}
+delayTime = {}
+output1 = {}
+output2 = {}
+output3 = {}
 
 #function to obtain all the setions, time off, time on, and delaytimes
 temp =[]
 def getLines(input_file):
     for line in input_file:
         temp.append(line[3:7])
+    return temp
+
+#function to validate size of data in sections and filling data
+def sectionsValidation(sections,id):
+    
+    def sectionsFilling(combinations):
+        keyWords = list(sections.keys())
+        for item in combinations:
+            if item not in keyWords:
+                sections[item] = 0
+    
+    def orderCorrecting(combinations):
+        for key_value in combinations:
+            if id ==1:
+                output1[key_value] = sections[key_value]
+            elif id == 2:
+                output2[key_value] = sections[key_value]
+            else:
+                output3[key_value] = sections[key_value]
+    
+    combinations = getCombinations(NumberOfSections)
+
+    if NumberOfSections == 2:
+        sectionsFilling(combinations)
+        orderCorrecting(combinations)
+    elif NumberOfSections == 3:
+        sectionsFilling(combinations)
+        orderCorrecting(combinations)
 
 #function to obtain number of section
-sectionsDic = {}
 def getSection(section_data):
+    id = 1
     for data in section_data:
         section = data[3]
-        if section not in sectionsDic:
-            sectionsDic[section] = 0
-        sectionsDic[section] += 1
-    return getFailureRate(sectionsDic)
-
+        if section not in sectionsDict:
+            sectionsDict[section] = 0
+        sectionsDict[section] += 1
+    return sectionsValidation(sectionsDict,id)
+    
 #function to obtain delaytime in section wise
-delayTime = {}
+
 def getDelayTime(data):
     for item in data:
         if item[3] not in delayTime:
@@ -29,56 +68,20 @@ def getDelayTime(data):
     return delayTime
 
 #function to obtain failure rate in section wise
-failureRate = {}
 def getFailureRate(data):
+    id =2
     for name,value in data.items():
         Lamba = value/years
         failureRate[name] = Lamba
-    return failureRate
+    return sectionsValidation(failureRate,id)
+    #return failureRate
 
 #function to obtain repaire rate in section wise
-repairRate = {}
 def getRepairRate(sections,delaytime):
+    id =3
     for keys,values in delaytime.items():
         repairRate[keys] = round(((8760*sections[keys])/values)/5,3)
-    return repairRate
-
-#selecting matrix for sections
-class Matrix:
-
-    def __init__(self,failureRates,repairRates,num_sections):
-        self.failureRates = failureRates
-        self.repairRates = repairRates
-        self.num_sections = num_sections
-
-
-    def matrixCalling(self):
-
-        #intialize the matrix size (nxn matrix)
-        matSize = (self.num_sections+1) * 2
-
-        #obtain
-        fRate = list(self.failureRates.values())
-        rRate = list(self.repairRates.values())
-
-        sRate = 8760    #default switching rate (deafult switching time is 1hr)
-    
-        if num_sections == 2:
-
-            # create transitioon matrix for two sections feeder
-            transMat = [[i / i for i in range(1, matSize + 1)], [fRate[0], -sRate] + [i * 0 for i in range(4)],
-                        [0, sRate, -rRate[0]] + [i * 0 for i in range(3)],
-                        [fRate[1], 0, 0 ,-sRate, 0, 0], [i * 0 for i in range(3)] + [sRate, -rRate[1], 0],
-                        [fRate[2]] + [i * 0 for i in range(4)] + [-rRate[2]]]
-            
-            matA = [[1], [0], [0], [0], [0], [0]]
-
-            # obtain invers of transition matrix
-            Inv_transmat = np.linalg.inv(transMat)
-
-            # obtaing probability matrix
-            result = np.dot(Inv_transmat,matA)
-        return result
+    return sectionsValidation(repairRate,id)
 
 def getProbability(result):
     for i in result:
@@ -88,17 +91,27 @@ def getProbability(result):
 if __name__ == '__main__':
     filename = input("Enter the filename with location: - ")
     years = int(input("Enter number of years:- "))
+    NumberOfSections = int(input("Enter number of sections of the feeder:- "))
     with open(filename+'.csv','r') as csv_file:
         csv_reader = csv.reader(csv_file)
         getLines(csv_reader)
+    
+    #calling the functions
     getSection(temp[1:])
     getDelayTime(temp[1:])
-    getRepairRate(sectionsDic, delayTime)
-    num_sections = len(sectionsDic) - 1
+    getFailureRate(sectionsDict)
+    getRepairRate(sectionsDict, delayTime)
 
-    mat = Matrix(failureRate,repairRate,num_sections)
+    print("Sections:- ",output1)
+    print("failure rates: - ",output2)
+    #print("delay time:- ",delayTime)
+    print("repair rate:- ",output3)
 
-    #print(mat.matrixCalling())
+    fRate = list(output2.values())
+    rRate = list(output3.values())
+
+    mat = Matrix(fRate,rRate,NumberOfSections)
+
+    for item in (mat.createMatrix()):
+        print(item)
     getProbability(mat.matrixCalling())
-        
-    #print(failureRate)
