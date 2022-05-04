@@ -103,8 +103,7 @@ if __name__ == '__main__':
     getRepairRate(sectionsDict, delayTime)
 
     print("Sections:- ",output1)
-    print("failure rates: - ",output2)
-    #print("delay time:- ",delayTime)
+    print("failure rates:- ",output2)
     print("repair rate:- ",output3)
 
     fRate = list(output2.values())
