@@ -2,7 +2,7 @@
 import csv
 from combinations import *
 from Matrix import *
-#from Main import *
+from indices import *
 
 #initial declaretion of dictionaries
 sectionsDict = {}
@@ -40,16 +40,13 @@ def sectionsValidation(sections,id):
     
     combinations = getCombinations(NumberOfSections)
 
-    if NumberOfSections == 2:
-        sectionsFilling(combinations)
-        orderCorrecting(combinations)
-    elif NumberOfSections == 3:
-        sectionsFilling(combinations)
-        orderCorrecting(combinations)
+    sectionsFilling(combinations)
+    orderCorrecting(combinations)
 
 #function to obtain number of section
 def getSection(section_data):
     id = 1
+
     for data in section_data:
         section = data[3]
         if section not in sectionsDict:
@@ -83,10 +80,13 @@ def getRepairRate(sections,delaytime):
         repairRate[keys] = round(((8760*sections[keys])/values)/5,3)
     return sectionsValidation(repairRate,id)
 
+#function to obtain 
 def getProbability(result):
+    probabilities = []
     for i in result:
-        print(i[0])
-        
+        probabilities.append(i[0])
+    return probabilities
+         
 #open and read the data from csv file
 if __name__ == '__main__':
     filename = input("Enter the filename with location: - ")
@@ -105,6 +105,7 @@ if __name__ == '__main__':
     print("Sections:- ",output1)
     print("failure rates:- ",output2)
     print("repair rate:- ",output3)
+    
 
     fRate = list(output2.values())
     rRate = list(output3.values())
@@ -113,4 +114,8 @@ if __name__ == '__main__':
 
     for item in (mat.createMatrix()):
         print(item)
-    getProbability(mat.matrixCalling())
+    probabilities = getProbability(mat.matrixCalling())
+
+    print(probabilities)
+
+    print(getIndices(probabilities,output2,output3,NumberOfSections))
