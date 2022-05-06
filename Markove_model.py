@@ -77,7 +77,7 @@ def getFailureRate(data):
 def getRepairRate(sections,delaytime):
     id =3
     for keys,values in delaytime.items():
-        repairRate[keys] = round(((8760*sections[keys])/values)/5,3)
+        repairRate[keys] = round(((8760*sections[keys])/values),3)
     return sectionsValidation(repairRate,id)
 
 #function to obtain 

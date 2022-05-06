@@ -47,7 +47,4 @@ def getIndices(probabilityLst,failurerRate,repaireRate,numberOfSections):
 
     MDT = numerator/denominator
 
-    return lambdaEq,MDT
-
-        
-    
+    return lambdaEq,mdtEq,MDT

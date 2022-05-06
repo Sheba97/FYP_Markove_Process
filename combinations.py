@@ -43,4 +43,3 @@ def getCombinations(num):
         Lst[i] = str(Lst[i])
     
     return Lst
-
