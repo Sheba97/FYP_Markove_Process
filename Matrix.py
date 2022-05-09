@@ -17,8 +17,8 @@ class Matrix:
         #size of transition matrix
         self.matSize = 2*(pow(2,self.num_sections)-1) 
 
-        #add first row to the transition matrix
-        self.transitionMatrix = [[int(i / i) for i in range(1, self.matSize + 1)]]     
+        #add first row to the transition matrix     
+        self.transitionMatrix = [[1]*self.matSize]
 
         #get first raw item since second raw
         for i in range(2,self.matSize+1):
